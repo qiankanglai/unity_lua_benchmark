@@ -646,8 +646,8 @@ public class RendererWrap
 				LuaDLL.luaL_error(L, "attempt to index shadowCastingMode on a nil value");
 			}
 		}
-
-        obj.shadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)LuaScriptMgr.GetNumber(L, 3); //GetNetObject(L, 3, typeof(UnityEngine.Rendering.ShadowCastingMode));
+        // Kanglai: GetNetObject(L, 3, typeof(UnityEngine.Rendering.ShadowCastingMode));???
+        obj.shadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)LuaScriptMgr.GetNumber(L, 3); 
         return 0;
 	}
 

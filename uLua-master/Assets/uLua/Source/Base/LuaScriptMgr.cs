@@ -681,11 +681,23 @@ public class LuaScriptMgr
         fileList.Add(name);
 
 #if !LUA_ZIP
-        string path = Util.LuaPath(name);
+        // Kanglai: using Resource.Load
+        /*string path = Util.LuaPath(name);
 
         if (File.Exists(path))
         {
             str = File.ReadAllBytes(path);
+        }*/
+        if (name.EndsWith(".lua"))
+        {
+            name = name.Substring(0, name.LastIndexOf('.'));
+        }
+        name = name.Replace('.', '/');
+        var t = Resources.Load(name);
+        TextAsset file = Resources.Load<TextAsset>(name);
+        if(file != null)
+        {
+            str = file.bytes;
         }
 #else
         IAssetFile zipFile = null;
