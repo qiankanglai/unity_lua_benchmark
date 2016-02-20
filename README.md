@@ -4,6 +4,16 @@ A simple test for performance comparsion between sLua & uLua.
 
 TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way, with comparsion with uLua.
 
+## Results
+
+![lua_clock](lua_clock.png)
+
+![profiler_time](profiler_time.png)
+
+![profiler_gc](profiler_gc.png)
+
+Detail data will be provided later.
+
 ## Benchmark Methods
 
 Based on sLua's performance_test, I modified C# part to take advantage of **Profiler**, and copied into uLua Project.
