@@ -30,15 +30,15 @@ Based on sLua's performance_test, I modified C# part to take advantage of **Prof
 
 基于sLua自带的performance_test场景，我主要是修改了C#部分，利用**Profiler**来监控信息，并移植到uLua中。
 
->	Profiler.BeginSample("test1");
->	l.luaState.getFunction("test1").call();
->	Profiler.EndSample();
-
-Also Lua part has a clock inside.
-
-同时Lua代码部分也有一个计时器。
+    Profiler.BeginSample("test1");
+    l.luaState.getFunction("test1").call();
+    Profiler.EndSample();
 
 ![profiler](images/profiler.png)
+
+At the same time Lua part has a clock inside. These two mesured time may not be the same.
+
+同时Lua代码部分也有一个计时器。这两个测出来的时间有可能不那么一致。
 
 ## Benchmark Environment 测试环境
 
