@@ -592,9 +592,10 @@ public class UnityEngine_RendererWrap
 	static int set_shadowCastingMode(IntPtr L)
 	{
 		UnityEngine.Renderer obj = (UnityEngine.Renderer)ToLua.ToObject(L, 1);
-		UnityEngine.Rendering.ShadowCastingMode arg0 = (UnityEngine.Rendering.ShadowCastingMode)ToLua.CheckObject(L, 2, typeof(UnityEngine.Rendering.ShadowCastingMode));
+        // Kanglai: force using int
+        UnityEngine.Rendering.ShadowCastingMode arg0 = (UnityEngine.Rendering.ShadowCastingMode)LuaDLL.lua_tonumber(L, 2);//.CheckObject(L, 2, typeof(UnityEngine.Rendering.ShadowCastingMode));
 
-		try
+        try
 		{
 			obj.shadowCastingMode = arg0;
 		}
