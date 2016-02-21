@@ -29,11 +29,17 @@ Also lua part has a clock inside.
 ## Benchmark Environment
 
 - Windows(Editor)
-	- Intel i5-3470 @ 3.2G, 16G RAM, NVIDIA GeForce GTX 660
+	- Intel i5-3470 @ 3.20GHz, 16G RAM, NVIDIA GeForce GTX 660
 	- Windows 10 64bit, Unity 5.2.4f1
-- Android(Release, C# JIT)
+- OSX(Editor)
+	- Intel i7-3615QM @ 2.30GHz, 8G RAM, NVIDIA GeForce GT 650M
+	- OSX 10.11.3, Unity 5.2.4f1
+- Android(Release)
 	- Nexus 6
 	- Android 6.0.1
+- iOS(Release, IL2CPP)
+	- iPad 3
+	- iOS 9.2.1
 
 All tests are executed in sequence, only once.
 
