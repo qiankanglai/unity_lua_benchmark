@@ -8,9 +8,9 @@ A simple test for performance comparsion between sLua & uLua.
 
 TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way, with comparsion with uLua.
 
-下图纵坐标为测试用例，横坐标是消耗时间或内存分配(**对数坐标**)。
-
 Images below show test cases as vertical axis, and time or gc alloc in horizonal axis(**Log coordinate**).
+
+下图纵坐标为测试用例，横坐标是消耗时间或内存分配(**对数坐标**)。
 
 ![lua_clock](images/lua_clock.png)
 
