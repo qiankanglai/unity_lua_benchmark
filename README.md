@@ -1,20 +1,18 @@
-A simple test for performance comparsion between sLua & uLua.
+A simple test for performance comparsion between Lua in Unity。
 
 **ATTENTION**: I'm a newbie to lua in fact, and this is only a simple test! If there is something wrong with my test or exists a better implemention, please contact me and I'll update ASAP! Any pull requests are welcomed!
 
-一个针对sLua和uLua的简单性能测试。
+一个针对Unity中执行Lua的简单性能测试。
 
 **注意**: 本人对Lua是新手阶段，而且本项目旨在提供一个简单的测试比较。如果你发现我的测试代码有问题或者有更好的写法，请联系我、我会尽快改正。欢迎任何Pull Request！
 
-TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way, with comparsion with uLua.
+TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way to Profiler.
 
 Images below show test cases as vertical axis, and time or gc alloc in horizonal axis(**Log coordinate**).
 
 下图纵坐标为测试用例，横坐标是消耗时间或内存分配(**对数坐标**)。
 
 ![lua_clock](images/lua_clock.png)
-
-![lua_clock_comp](images/lua_clock_comp.png)
 
 ![profiler_time](images/profiler_time.png)
 
@@ -26,9 +24,9 @@ More details can be found in [benchmark.xlsx](benchmark.xlsx).
 
 ## Benchmark Methods 测试方法
 
-Based on sLua's performance_test, I modified C# part to take advantage of **Profiler**, and ported into uLua Project.
+Based on sLua's performance_test, I modified C# part to take advantage of **Profiler**, and ported into other Projects.
 
-基于sLua自带的performance_test场景，我主要是修改了C#部分，利用**Profiler**来监控信息，并移植到uLua中。
+基于sLua自带的performance_test场景，我主要是修改了C#部分，利用**Profiler**来监控信息，并移植到其他项目中。
 
     Profiler.BeginSample("test1");
     l.luaState.getFunction("test1").call();
@@ -61,9 +59,15 @@ All tests are executed in sequence, only once.
 
 ## Changelog
 
-[uLua](https://github.com/jarjin/uLua)-master, [commit #dbe98bc](https://github.com/jarjin/uLua/commit/dbe98bce0a3fd169935617dec9e9fe129de8832b)
+[uLua](https://github.com/jarjin/uLua), [commit #dbe98bc](https://github.com/jarjin/uLua/commit/dbe98bce0a3fd169935617dec9e9fe129de8832b)
 
-[sLua](https://github.com/pangweiwei/slua/commits/master)-master, [commit #5388a6b](https://github.com/pangweiwei/slua/commit/5388a6b5acd4b7d09704806a770267ec00d6773d)
+[sLua](https://github.com/pangweiwei/slua/commits/master), [commit #5388a6b](https://github.com/pangweiwei/slua/commit/5388a6b5acd4b7d09704806a770267ec00d6773d)
+
+[toLua](https://github.com/topameng/tolua),  [commit #2ac8c9e](https://github.com/topameng/tolua/commit/2ac8c9e82bddbd22f681660b16ba316c78cf861f)
+
+### 1.01 (20160221)
+
+- toLua added
 
 ### 1.0 (20160221)
 
