@@ -2,9 +2,11 @@ A simple test for performance comparsion between sLua & uLua.
 
 **ATTENTION**: I'm a newbie to lua in fact, and this is only a simple test! If there is something wrong with my test or exists a better implemention, please contact me and I'll update ASAP! Any pull requests are welcomed!
 
-TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way, with comparsion with uLua.
+一个针对sLua和uLua的简单性能测试。
 
-## Results
+**注意**: 本人对Lua是新手阶段，而且本项目旨在提供一个简单的测试比较。如果你发现我的测试代码有问题或者有更好的写法，请联系我、我会尽快改正。欢迎任何Pull Request！
+
+TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way, with comparsion with uLua.
 
 ![lua_clock](lua_clock.png)
 
@@ -12,21 +14,27 @@ TODO: Mesure startup consumption. sLua has a async init so I have to figure out 
 
 ![profiler_gc](profiler_gc.png)
 
-Detail data will be provided later.
+More details can be found in [benchmark.xlsx](benchmark.xlsx).
 
-## Benchmark Methods
+更多数据见[benchmark.xlsx](benchmark.xlsx)。
 
-Based on sLua's performance_test, I modified C# part to take advantage of **Profiler**, and copied into uLua Project.
+## Benchmark Methods 测试方法
+
+Based on sLua's performance_test, I modified C# part to take advantage of **Profiler**, and ported into uLua Project.
+
+基于sLua自带的performance_test场景，我主要是修改了C#部分，利用**Profiler**来监控信息，并移植到uLua中。
 
 >	Profiler.BeginSample("test1");
 >	l.luaState.getFunction("test1").call();
 >	Profiler.EndSample();
 
-Also lua part has a clock inside.
+Also Lua part has a clock inside.
+
+同时Lua代码部分也有一个计时器。
 
 ![profiler](profiler.png)
 
-## Benchmark Environment
+## Benchmark Environment 测试环境
 
 - Windows(Editor)
 	- Intel i5-3470 @ 3.20GHz, 16G RAM, NVIDIA GeForce GTX 660
@@ -43,9 +51,9 @@ Also lua part has a clock inside.
 
 All tests are executed in sequence, only once.
 
-## Changelog
+所有测试顺序执行，且只执行一次。
 
-Current Status:
+## Changelog
 
 [uLua](https://github.com/jarjin/uLua)-master, [commit #dbe98bc](https://github.com/jarjin/uLua/commit/dbe98bce0a3fd169935617dec9e9fe129de8832b)
 
