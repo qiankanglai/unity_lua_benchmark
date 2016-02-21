@@ -8,11 +8,17 @@ A simple test for performance comparsion between sLua & uLua.
 
 TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way, with comparsion with uLua.
 
-![lua_clock](lua_clock.png)
+下图纵坐标为测试用例，横坐标是消耗时间或内存分配(**对数坐标**)。
 
-![profiler_time](profiler_time.png)
+Images below show test cases as vertical axis, and time or gc alloc in horizonal axis(**Log coordinate**).
 
-![profiler_gc](profiler_gc.png)
+![lua_clock](images/lua_clock.png)
+
+![lua_clock_comp](images/lua_clock_comp.png)
+
+![profiler_time](images/profiler_time.png)
+
+![profiler_gc](images/profiler_gc.png)
 
 More details can be found in [benchmark.xlsx](benchmark.xlsx).
 
@@ -32,7 +38,7 @@ Also Lua part has a clock inside.
 
 同时Lua代码部分也有一个计时器。
 
-![profiler](profiler.png)
+![profiler](images/profiler.png)
 
 ## Benchmark Environment 测试环境
 
