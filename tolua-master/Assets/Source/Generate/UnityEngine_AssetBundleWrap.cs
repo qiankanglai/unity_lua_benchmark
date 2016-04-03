@@ -55,7 +55,7 @@ public class UnityEngine_AssetBundleWrap
 
 		try
 		{
-			o = UnityEngine.AssetBundle.CreateFromMemory(arg0);
+			o = UnityEngine.AssetBundle.LoadFromMemoryAsync(arg0);
 		}
 		catch(Exception e)
 		{
@@ -75,7 +75,7 @@ public class UnityEngine_AssetBundleWrap
 
 		try
 		{
-			o = UnityEngine.AssetBundle.CreateFromMemoryImmediate(arg0);
+			o = UnityEngine.AssetBundle.LoadFromMemory(arg0);
 		}
 		catch(Exception e)
 		{
@@ -95,7 +95,7 @@ public class UnityEngine_AssetBundleWrap
 
 		try
 		{
-			o = UnityEngine.AssetBundle.CreateFromFile(arg0);
+			o = UnityEngine.AssetBundle.LoadFromFile(arg0);
 		}
 		catch(Exception e)
 		{

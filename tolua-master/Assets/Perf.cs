@@ -35,7 +35,6 @@ public class Perf : MonoBehaviour
 	{
 		if (GUI.Button(new Rect(10, 10, 120, 50), "Test1"))
 		{
-			logText = "";
             Profiler.BeginSample("test1");
             LuaFunction func = l.GetFunction("test1");
             func.BeginPCall();
@@ -49,7 +48,6 @@ public class Perf : MonoBehaviour
 
 		if (GUI.Button(new Rect(10, 100, 120, 50), "Test2"))
 		{
-			logText = "";
             Profiler.BeginSample("test2");
             LuaFunction func = l.GetFunction("test2");
             func.BeginPCall();
@@ -63,7 +61,6 @@ public class Perf : MonoBehaviour
 
 		if (GUI.Button(new Rect(10, 200, 120, 50), "Test3"))
 		{
-			logText = "";
             Profiler.BeginSample("test3");
             LuaFunction func = l.GetFunction("test3");
             func.BeginPCall();
@@ -77,7 +74,6 @@ public class Perf : MonoBehaviour
 
 		if (GUI.Button(new Rect(10, 300, 120, 50), "Test4"))
 		{
-			logText = "";
             Profiler.BeginSample("test4");
             LuaFunction func = l.GetFunction("test4");
             func.BeginPCall();
@@ -91,7 +87,6 @@ public class Perf : MonoBehaviour
 
 		if (GUI.Button(new Rect(200, 10, 120, 50), "Test5"))
 		{
-			logText = "";
             Profiler.BeginSample("test5");
             LuaFunction func = l.GetFunction("test5");
             func.BeginPCall();
@@ -105,7 +100,6 @@ public class Perf : MonoBehaviour
 
         if (GUI.Button(new Rect(200, 100, 120, 50), "Test6 jit"))
         {
-            logText = "";
             Profiler.BeginSample("test6");
             LuaFunction func = l.GetFunction("test6");
             func.BeginPCall();
@@ -119,7 +113,6 @@ public class Perf : MonoBehaviour
 
 		if (GUI.Button(new Rect(200, 200, 120, 50), "Test6 non-jit"))
 		{
-			logText = "";
             LuaFunction func = l.GetFunction("test7");
             func.BeginPCall();
             func.Push(transform);
@@ -130,6 +123,6 @@ public class Perf : MonoBehaviour
             Profiler.EndSample();
         }
         
-		GUI.Label(new Rect(400, 200, 300, 50), logText);
+		GUI.Label(new Rect(400, 200, 300, 150), logText);
 	}
 }

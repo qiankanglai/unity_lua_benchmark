@@ -92,7 +92,7 @@ public class AssetBundleWrap
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		byte[] objs0 = LuaScriptMgr.GetArrayNumber<byte>(L, 1);
-		AssetBundleCreateRequest o = AssetBundle.CreateFromMemory(objs0);
+		AssetBundleCreateRequest o = AssetBundle.LoadFromMemoryAsync(objs0);
 		LuaScriptMgr.PushObject(L, o);
 		return 1;
 	}
@@ -102,7 +102,7 @@ public class AssetBundleWrap
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		byte[] objs0 = LuaScriptMgr.GetArrayNumber<byte>(L, 1);
-		AssetBundle o = AssetBundle.CreateFromMemoryImmediate(objs0);
+		AssetBundle o = AssetBundle.LoadFromMemory(objs0);
 		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
@@ -112,7 +112,7 @@ public class AssetBundleWrap
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
-		AssetBundle o = AssetBundle.CreateFromFile(arg0);
+		AssetBundle o = AssetBundle.LoadFromFile(arg0);
 		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
