@@ -42,10 +42,10 @@ At the same time Lua part has a clock inside. These two mesured time may not be 
 
 - Windows(Editor)
 	- Intel i5-3470 @ 3.20GHz, 16G RAM, NVIDIA GeForce GTX 660
-	- Windows 10 64bit, Unity 5.2.4f1
+	- Windows 10 64bit, Unity 5.3.4f1
 - OSX(Editor)
 	- Intel i7-3615QM @ 2.30GHz, 8G RAM, NVIDIA GeForce GT 650M
-	- OSX 10.11.3, Unity 5.2.4f1
+	- OSX 10.11.3, Unity 5.3.4f1
 - Android(Release)
 	- Nexus 6
 	- Android 6.0.1
@@ -64,6 +64,11 @@ All tests are executed in sequence, only once.
 [sLua](https://github.com/pangweiwei/slua/commits/master), [commit #5388a6b](https://github.com/pangweiwei/slua/commit/5388a6b5acd4b7d09704806a770267ec00d6773d)
 
 [toLua](https://github.com/topameng/tolua),  [commit #2ac8c9e](https://github.com/topameng/tolua/commit/2ac8c9e82bddbd22f681660b16ba316c78cf861f)
+
+### 1.02 (20160403)
+
+- upgrade to Unity 5.3.4
+- mono version added
 
 ### 1.01 (20160221)
 

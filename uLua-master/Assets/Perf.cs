@@ -4,10 +4,9 @@ using LuaInterface;
 public class Perf : MonoBehaviour
 {
     LuaScriptMgr l = null;
-    // Use this for initialization
     void Start()
     {
-        Screen.SetResolution(800, 480, true);
+        //Screen.SetResolution(800, 480, true);
 
         TextAsset asset = Resources.Load<TextAsset>("perf");
         Profiler.BeginSample("init");
@@ -17,11 +16,7 @@ public class Perf : MonoBehaviour
         Profiler.EndSample();
         l.GetLuaFunction("main").Call();
 
-#if UNITY_5
         Application.logMessageReceived += this.log;
-#else
-		Application.RegisterLogCallback(this.log);
-#endif
 	}
 
 	string logText = "";

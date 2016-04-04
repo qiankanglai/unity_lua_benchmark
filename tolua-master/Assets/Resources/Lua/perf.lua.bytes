@@ -18,7 +18,7 @@ function test1()
 	for i=1,200000 do
         transform.position=transform.position
 	end
-	print("test1/lua " .. (os.clock() - start));
+	print("test1/lua " .. ((os.clock() - start) * 1000));
 end
 
 function test2()
@@ -27,7 +27,7 @@ function test2()
 	for i=1,200000 do
 		transform:Rotate(Vector3.up, 90)
 	end
-	print("test2/lua " .. (os.clock() - start));
+	print("test2/lua " .. ((os.clock() - start) * 1000));
 end
 
 function test3()
@@ -36,7 +36,7 @@ function test3()
 		local v = Vector3(i,i,i)
 		Vector3.Normalize(v)
 	end
-	print("test3/lua " .. (os.clock() - start));
+	print("test3/lua " .. ((os.clock() - start) * 1000));
 end
 
 function test4()
@@ -46,7 +46,7 @@ function test4()
 	for i=1,200000 do
 		local v = GameObject()	
 	end
-	print("test4/lua " .. (os.clock() - start));
+	print("test4/lua " .. ((os.clock() - start) * 1000));
 end
 
 
@@ -62,7 +62,7 @@ function test5()
 		c.shadowCastingMode=0
 		c.receiveShadows=false
 	end
-	print("test5/lua " .. (os.clock() - start));
+	print("test5/lua " .. ((os.clock() - start) * 1000));
 end
 
 function test6()
@@ -72,7 +72,7 @@ function test6()
 		local t=Quaternion.Euler(100,100,100)
 		local q=Quaternion.Slerp(Quaternion.identity,t,0.5)
 	end
-	print("test6/lua jit  " .. (os.clock() - start));
+	print("test6/lua jit  " .. ((os.clock() - start) * 1000));
 end
 
 function test7()
@@ -83,5 +83,5 @@ function test7()
 		local t=Quaternion.Euler(100,100,100)
 		local q=Quaternion.Slerp(Quaternion.identity,t,0.5)
 	end
-	print("test6/lua non-jit  " .. (os.clock() - start));
+	print("test6/lua non-jit  " .. ((os.clock() - start) * 1000));
 end

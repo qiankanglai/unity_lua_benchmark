@@ -4,17 +4,10 @@ using System;
 
 public class Perf : MonoBehaviour
 {
-	
-	// Use this for initialization
 	void Start()
 	{
-        Screen.SetResolution(800, 480, true);
-
-#if UNITY_5
+        //Screen.SetResolution(800, 480, true);
 		Application.logMessageReceived += this.log;
-#else
-		Application.RegisterLogCallback(this.log);
-#endif
 	}
 
 	string logText = "";

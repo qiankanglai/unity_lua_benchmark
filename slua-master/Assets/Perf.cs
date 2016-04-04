@@ -5,23 +5,16 @@ public class Perf : MonoBehaviour
 {
 
 	LuaSvr l;
-	// Use this for initialization
 	void Start()
 	{
-        Screen.SetResolution(800, 480, true);
-        //Profiler.BeginSample("start");
+        //Screen.SetResolution(800, 480, true);
 		l = new LuaSvr();
 		l.init(null, () =>
 		{
 			l.start("perf");
-            //Profiler.EndSample();
 		});
-
-#if UNITY_5
+		
 		Application.logMessageReceived += this.log;
-#else
-		Application.RegisterLogCallback(this.log);
-#endif
 	}
 
 	string logText = "";
