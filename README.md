@@ -8,15 +8,18 @@ A simple test for performance comparsion between Lua in Unity。
 
 TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way to Profiler.
 
-Images below show test cases as vertical axis, and time or gc alloc in horizonal axis(**Log coordinate**).
+Images below show test cases as vertical axis, and time or gc alloc normalized according to corresponding mono version.
 
-下图纵坐标为测试用例，横坐标是消耗时间或内存分配(**对数坐标**)。
-
-![lua_clock](images/lua_clock.png)
+下图纵坐标为测试用例，以对应Mono版本为单位归一化。
 
 ![profiler_time](images/profiler_time.png)
 
 ![profiler_gc](images/profiler_gc.png)
+
+![lua_clock_win](images/lua_clock_win.png)
+![lua_clock_osx](images/lua_clock_osx.png)
+![lua_clock_android](images/lua_clock_android.png)
+![lua_clock_ios](images/lua_clock_ios.png)
 
 More details can be found in [benchmark.xlsx](benchmark.xlsx).
 
@@ -34,9 +37,9 @@ Based on sLua's performance_test, I modified C# part to take advantage of **Prof
 
 ![profiler](images/profiler.png)
 
-At the same time Lua part has a clock inside. These two mesured time may not be the same.
+At the same time Lua part has a clock inside. These two mesured time may not be the same. Some seems outliers which are colored red.
 
-同时Lua代码部分也有一个计时器。这两个测出来的时间有可能不那么一致。
+同时Lua代码部分也有一个计时器。这两个测出来的时间有可能不那么一致。有些看起来是不太对的点已标红。
 
 ## Benchmark Environment 测试环境
 
@@ -69,6 +72,7 @@ All tests are executed in sequence, only once.
 
 - upgrade to Unity 5.3.4
 - mono version added
+- new normalized graph
 
 ### 1.01 (20160221)
 
