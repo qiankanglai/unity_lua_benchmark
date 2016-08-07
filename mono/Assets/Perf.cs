@@ -21,92 +21,97 @@ public class Perf : MonoBehaviour
 	{
 		if (GUI.Button(new Rect(10, 10, 120, 50), "Test1"))
 		{
-            Profiler.BeginSample("test1");
 			var t1 = DateTime.Now;
-			for(int i=1; i <= 200000; i++)
+            Profiler.BeginSample("test1");
+            for (int i=1; i <= 200000; i++)
 			{
 				transform.position = transform.position;
-			}
-			var t2 = DateTime.Now;
-			double t = (t2-t1).TotalMilliseconds;
-			log("test1 "+t.ToString(), "", LogType.Log);
+            }
             Profiler.EndSample();
+            var t2 = DateTime.Now;
+			double t = (t2-t1).TotalMilliseconds;
+			Debug.Log("test1 " + t.ToString());
         }
 
 		if (GUI.Button(new Rect(10, 100, 120, 50), "Test2"))
 		{
-			Profiler.BeginSample("test2");
 			var t1 = DateTime.Now;
-			for(int i=1; i <= 200000; i++)
+            Profiler.BeginSample("test2");
+            for (int i=1; i <= 200000; i++)
 			{
 				transform.Rotate(Vector3.up, 90);
-			}
-			var t2 = DateTime.Now;
-			double t = (t2-t1).TotalMilliseconds;
-			log("test2 "+t.ToString(), "", LogType.Log);
+            }
             Profiler.EndSample();
+            var t2 = DateTime.Now;
+			double t = (t2-t1).TotalMilliseconds;
+            Debug.Log("test2 " + t.ToString());
         }
 
 		if (GUI.Button(new Rect(10, 200, 120, 50), "Test3"))
 		{
-			Profiler.BeginSample("test3");
 			var t1 = DateTime.Now;
-			for(int i=1; i <= 2000000; i++)
+            Profiler.BeginSample("test3");
+            for (int i=1; i <= 2000000; i++)
 			{
 				Vector3 v = new Vector3(i,i,i);
 				Vector3.Normalize(v);
-			}
-			var t2 = DateTime.Now;
-			double t = (t2-t1).TotalMilliseconds;
-			log("test3 "+t.ToString(), "", LogType.Log);
+            }
             Profiler.EndSample();
+            var t2 = DateTime.Now;
+			double t = (t2-t1).TotalMilliseconds;
+            Debug.Log("test3 " + t.ToString());
         }
 
 		if (GUI.Button(new Rect(10, 300, 120, 50), "Test4"))
 		{
-			Profiler.BeginSample("test4");
 			var t1 = DateTime.Now;
-			for(int i=1; i <= 200000; i++)
+            Profiler.BeginSample("test4");
+            for (int i=1; i <= 200000; i++)
 			{
 				var v = new GameObject();
-			}
-			var t2 = DateTime.Now;
-			double t = (t2-t1).TotalMilliseconds;
-			log("test4 "+t.ToString(), "", LogType.Log);
+            }
             Profiler.EndSample();
+            var t2 = DateTime.Now;
+            double t = (t2 - t1).TotalMilliseconds;
+            Debug.Log("test4 " + t.ToString());
         }
 
 		if (GUI.Button(new Rect(200, 10, 120, 50), "Test5"))
 		{
-			Profiler.BeginSample("test5");
 			var t1 = DateTime.Now;
-			for(int i=1; i <= 20000; i++)
+            Profiler.BeginSample("test5");
+            for (int i=1; i <= 20000; i++)
 			{
 				var v = new GameObject();
 				v.AddComponent<SkinnedMeshRenderer>();
 				var c = v.GetComponent<SkinnedMeshRenderer>();
 				c.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 				c.receiveShadows = false;
-			}
-			var t2 = DateTime.Now;
-			double t = (t2-t1).TotalMilliseconds;
-			log("test5 "+t.ToString(), "", LogType.Log);
+            }
             Profiler.EndSample();
+            var t2 = DateTime.Now;
+			double t = (t2-t1).TotalMilliseconds;
+            Debug.Log("test5 " + t.ToString());
         }
 
         if (GUI.Button(new Rect(200, 100, 120, 50), "Test6"))
         {
-			Profiler.BeginSample("test6");
 			var t1 = DateTime.Now;
-			for(int i=1; i <= 200000; i++)
+            Profiler.BeginSample("test6");
+            for (int i=1; i <= 200000; i++)
 			{
 				var p = Quaternion.Euler(100,100,100);
 				var q = Quaternion.Slerp(Quaternion.identity,p,0.5f);
-			}
-			var t2 = DateTime.Now;
-			double t = (t2-t1).TotalMilliseconds;
-			log("test6 "+t.ToString(), "", LogType.Log);
+            }
             Profiler.EndSample();
+            var t2 = DateTime.Now;
+			double t = (t2-t1).TotalMilliseconds;
+            Debug.Log("test6 " + t.ToString());
+        }
+
+        if (GUI.Button(new Rect(200, 200, 120, 50), "Clear"))
+        {
+            logText = "";
         }
 
 		GUI.Label(new Rect(400, 200, 300, 150), logText);

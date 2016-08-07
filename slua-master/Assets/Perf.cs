@@ -78,6 +78,11 @@ public class Perf : MonoBehaviour
             Profiler.EndSample();
 		}
 
-		GUI.Label(new Rect(400, 200, 300, 150), logText);
+        if (GUI.Button(new Rect(200, 300, 120, 50), "Clear"))
+        {
+            logText = "";
+        }
+
+        GUI.Label(new Rect(400, 200, 300, 150), logText);
 	}
 }
