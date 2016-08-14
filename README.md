@@ -8,9 +8,9 @@ A simple test for performance comparsion between Lua in Unity。
 
 TODO: Mesure startup consumption. sLua has a async init so I have to figure out a better way to Profiler.
 
-Images below show test cases as vertical axis, and time or gc alloc normalized according to corresponding mono version.
+Images below show test cases as vertical axis, and time or gc alloc. (GC Alloc is in LOG)
 
-下图纵坐标为测试用例，以对应Mono版本为单位归一化。
+下图纵坐标为测试用例。(GC在对数坐标中进行比较)
 
 ![profiler_time](images/profiler_time.png)
 
@@ -56,9 +56,9 @@ At the same time Lua part has a clock inside. These two mesured time may not be 
 	- iPad 3
 	- iOS 9.2.1
 
-All tests are executed in sequence, only once.
+Every test is executed five times, and then reboot App.
 
-所有测试顺序执行，且只执行一次。
+每个测试顺序执行五次，然后重启。
 
 ## Changelog
 
@@ -67,6 +67,10 @@ All tests are executed in sequence, only once.
 [sLua](https://github.com/pangweiwei/slua), [commit #5388a6b](https://github.com/pangweiwei/slua/commit/5388a6b5acd4b7d09704806a770267ec00d6773d)
 
 [toLua](https://github.com/topameng/tolua),  [commit #2ac8c9e](https://github.com/topameng/tolua/commit/2ac8c9e82bddbd22f681660b16ba316c78cf861f)
+
+### 1.03 (20160814)
+
+- new data with new test methods (five times execution, which providing more details)
 
 ### 1.02 (20160403)
 
