@@ -3,7 +3,9 @@ using LuaInterface;
 using System;
 using System.Linq;
 using System.Reflection;
+#if !SLUA_STANDALONE
 using UnityEngine;
+#endif
 using System.IO;
 
 namespace SLua{
@@ -49,7 +51,7 @@ namespace SLua{
 		}
 
 		#endif
-		private static Lua3rdMeta _instance;
+		private static Lua3rdMeta _instance=null;
 		public static Lua3rdMeta Instance{
 			get{
 				#if !SLUA_STANDALONE

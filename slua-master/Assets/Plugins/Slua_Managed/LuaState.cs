@@ -290,6 +290,10 @@ namespace SLua
 			return null;
 		}
 
+		// you can add call method with specific type rather than object type to avoid gc alloc, like
+		// public object call(int a1,float a2,string a3,object a4)
+		
+		// using specific type to avoid type boxing/unboxing
 	}
 
 	public class LuaTable : LuaVar, IEnumerable<LuaTable.TablePair>
@@ -626,13 +630,13 @@ end
 			int loaderTable = LuaDLL.lua_gettop(L);
 
 			// Shift table elements right
-			for (int e = LuaDLL.lua_rawlen(L, loaderTable) + 1; e > 1; e--)
+			for (int e = LuaDLL.lua_rawlen(L, loaderTable) + 1; e > 2; e--)
 			{
 				LuaDLL.lua_rawgeti(L, loaderTable, e - 1);
 				LuaDLL.lua_rawseti(L, loaderTable, e);
 			}
 			LuaDLL.lua_pushvalue(L, loaderFunc);
-			LuaDLL.lua_rawseti(L, loaderTable, 1);
+			LuaDLL.lua_rawseti(L, loaderTable, 2);
 			LuaDLL.lua_settop(L, 0);
 			return 0;
 		}
@@ -845,7 +849,7 @@ end
 		static public void pushcsfunction(IntPtr L, LuaCSFunction function)
 		{
 			LuaDLL.lua_getref(L, get(L).PCallCSFunctionRef);
-			LuaDLL.lua_pushcclosure(L, Marshal.GetFunctionPointerForDelegate(function), 0);
+			LuaDLL.lua_pushcclosure(L, function, 0);
 			LuaDLL.lua_call(L, 1, 1);
 		}
 
@@ -908,9 +912,27 @@ end
 			return null;
 		}
 
+	    /// <summary>
+	    /// Ensure remove BOM from bytes
+	    /// </summary>
+	    /// <param name="bytes"></param>
+	    /// <returns></returns>
+	    public static byte[] CleanUTF8Bom(byte[] bytes)
+	    {
+            if (bytes.Length > 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
+            {
+                var oldBytes = bytes;
+                bytes = new byte[bytes.Length - 3];
+                Array.Copy(oldBytes, 3, bytes, 0, bytes.Length);
+            }
+            return bytes;
+	    }
+
 		public bool doBuffer(byte[] bytes, string fn, out object ret)
-		{
-			ret = null;
+        {        
+            // ensure no utf-8 bom, LuaJIT can read BOM, but Lua cannot!
+		    bytes = CleanUTF8Bom(bytes);
+            ret = null;
 			int errfunc = LuaObject.pushTry(L);
 			if (LuaDLL.luaL_loadbuffer(L, bytes, bytes.Length, fn) == 0)
 			{
@@ -937,8 +959,8 @@ end
 					bytes = loaderDelegate(fn);
 				else
 				{
-					fn = fn.Replace(".", "/");
 #if !SLUA_STANDALONE
+					fn = fn.Replace(".", "/");
 					TextAsset asset = (TextAsset)Resources.Load(fn);
 					if (asset == null)
 						return null;
@@ -947,8 +969,6 @@ end
 				    bytes = File.ReadAllBytes(fn);
 #endif
 				}
-
-				if (bytes != null) DebugInterface.require(fn, bytes);
 				return bytes;
 			}
 			catch (Exception e)
@@ -1143,6 +1163,7 @@ end
 				cnt = refQueue.Count;
 			}
 
+			var l = L;
 			for (int n = 0; n < cnt; n++)
 			{
 				UnrefPair u;
@@ -1150,7 +1171,7 @@ end
 				{
 					u = refQueue.Dequeue();
 				}
-				u.act(L, u.r);
+				u.act(l, u.r);
 			}
 		}
 	}
