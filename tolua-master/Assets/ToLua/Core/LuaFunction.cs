@@ -1,49 +1,77 @@
-﻿using System;
+﻿/*
+Copyright (c) 2015-2016 topameng(topameng@qq.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LuaInterface
 {
-    public enum TracePCall
-    {        
-        Ignore = 1,            
-        Trace = 2,
-    }
-
     public class LuaFunction : LuaBaseRef
     {
+        protected struct FuncData
+        {
+            public int oldTop;
+            public int stackPos;
+
+            public FuncData(int top, int stack)
+            {
+                oldTop = top;
+                stackPos = stack;
+            }
+        }
+
         protected int oldTop = -1;
-        protected TracePCall trace = TracePCall.Trace;
         private int argCount = 0;
-        private int stackPos = -1;        
+        private int stackPos = -1;
+        private Stack<FuncData> stack = new Stack<FuncData>();
 
         public LuaFunction(int reference, LuaState state)
         {
             this.reference = reference;
-            this.luaState = state;            
+            this.luaState = state;
         }
 
         public override void Dispose()
         {
 #if UNITY_EDITOR
-            if (oldTop != -1)
+            if (oldTop != -1 && count <= 1)
             {
-                Debugger.LogError("you muse call EndPCall before Dispose it");
+                Debugger.LogError("You must call EndPCall before calling Dispose");
             }
 #endif
             base.Dispose();
         }
 
-        public virtual int BeginPCall(TracePCall trace = TracePCall.Trace)
+        public virtual int BeginPCall()
         {
-#if UNITY_EDITOR
-            if (oldTop != -1)
+            if (luaState == null)
             {
-                //整个调用过程未完成被嵌套调用回自己
-                Debugger.LogError("you muse call EndPCall before call BeginPCall again");
+                throw new LuaException("LuaFunction has been disposed");
             }
-#endif
-            this.trace = trace;
-            oldTop = luaState.BeginPCall(reference, trace);
+
+            stack.Push(new FuncData(oldTop, stackPos));
+            oldTop = luaState.BeginPCall(reference);
+            stackPos = -1;
+            argCount = 0;
             return oldTop;
         }
 
@@ -52,13 +80,21 @@ namespace LuaInterface
 #if UNITY_EDITOR
             if (oldTop == -1)
             {
-                Debugger.LogError("you muse call BeginPCall before PCall");
+                Debugger.LogError("You must call BeginPCall before calling PCall");
             }
 #endif
 
             stackPos = oldTop + 1;
-            string error = luaState.PCall(argCount, trace != TracePCall.Ignore ? oldTop : 0);
-            ThrowException(error);            
+
+            try
+            {
+                luaState.PCall(argCount, oldTop);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public void EndPCall()
@@ -66,33 +102,30 @@ namespace LuaInterface
             if (oldTop != -1)
             {
                 luaState.EndPCall(oldTop);
-
-                if (trace == TracePCall.Trace)
-                {
-                    luaState.LuaRemove(oldTop);                    
-                }
-
-                oldTop = -1;
                 argCount = 0;
-                stackPos = -1;
+                FuncData data = stack.Pop();
+                oldTop = data.oldTop;
+                stackPos = data.stackPos;
             }
         }
 
         public void Call()
-        {            
+        {
             BeginPCall();
             PCall();
-            EndPCall();            
+            EndPCall();
         }
 
+        //慎用
         public object[] Call(params object[] args)
         {
             BeginPCall();
             int count = args == null ? 0 : args.Length;
 
-            if (!luaState.CehckStack(count))
+            if (!luaState.LuaCheckStack(count + 6))
             {
-                ThrowException("Lua stack overflow");
+                EndPCall();
+                throw new LuaException("stack overflow");
             }
 
             PushArgs(args);
@@ -113,15 +146,27 @@ namespace LuaInterface
             ++argCount;
         }
 
-        public void Push(int num)
+        public void Push(int n)
+        {
+            luaState.Push(n);
+            ++argCount;
+        }
+
+        public void Push(uint un)
+        {
+            luaState.Push(un);
+            ++argCount;
+        }
+
+        public void Push(long num)
         {
             luaState.Push(num);
             ++argCount;
         }
 
-        public void PushInt64(LuaInteger64 n64)
+        public void Push(ulong un)
         {
-            luaState.PushInt64(n64);
+            luaState.Push(un);
             ++argCount;
         }
 
@@ -164,12 +209,6 @@ namespace LuaInterface
         public void Push(Type t)
         {
             luaState.Push(t);
-            ++argCount;
-        }
-
-        public void Push(ValueType value)
-        {
-            luaState.Push(value);
             ++argCount;
         }
 
@@ -223,31 +262,77 @@ namespace LuaInterface
 
         public void Push(Ray ray)
         {
-            string error = null;
-            luaState.Push(ray, out error);
-            ++argCount;
-            ThrowException(error);
+            try
+            {
+                luaState.Push(ray);
+                ++argCount;
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public void Push(Bounds bounds)
         {
-            string error = null;
-            luaState.Push(bounds, out error);
-            ++argCount;
-            ThrowException(error);
+            try
+            {
+                luaState.Push(bounds);
+                ++argCount;
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
+        }
+
+        public void Push(RaycastHit hit)
+        {
+            try
+            {
+                luaState.Push(hit);
+                ++argCount;
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public void Push(Touch t)
         {
-            string error = null;
-            luaState.Push(t, out error);
-            ++argCount;
-            ThrowException(error);
+            try
+            {
+                luaState.Push(t);
+                ++argCount;
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public void Push(LuaByteBuffer buffer)
         {
-            luaState.Push(buffer);
+            try
+            {
+                luaState.Push(buffer);
+                ++argCount;
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
+        }
+
+        public void PushValue(ValueType value)
+        {
+            luaState.PushValue(value);
             ++argCount;
         }
 
@@ -259,134 +344,209 @@ namespace LuaInterface
 
         public void PushArgs(object[] args)
         {
+            if (args == null)
+            {
+                return;
+            }
+
             argCount += args.Length;
             luaState.PushArgs(args);
         }
 
         public void PushByteBuffer(byte[] buffer)
         {
-            luaState.PushByteBuffer(buffer);
-            ++argCount;
-        }
-
-        void ThrowException(string error)
-        {
-            if (error != null)
+            try
+            {
+                luaState.PushByteBuffer(buffer);
+                ++argCount;
+            }
+            catch (Exception e)
             {
                 EndPCall();
-
-                if (LuaException.luaStack != null)
-                {
-                    error = string.Format("{0}{1}{2}", error, Environment.NewLine, LuaException.luaStack);
-                    LuaException.luaStack = null;
-                }
-
-                throw new LuaException(error);
-            }            
+                throw e;
+            }
         }
 
         public double CheckNumber()
         {
-            string error = null;
-            double num = luaState.CheckNumber(stackPos++, out error);
-            ThrowException(error);
-            return num;
+            try
+            {
+                return luaState.LuaCheckNumber(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public bool CheckBoolean()
         {
-            string error = null;
-            bool flag =  luaState.CheckBoolean(stackPos++, out error);
-            ThrowException(error);
-            return flag;
+            try
+            {
+                return luaState.LuaCheckBoolean(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public string CheckString()
         {
-            string error = null;
-            string str = luaState.CheckString(stackPos++, out error);
-            ThrowException(error);
-            return str;
+            try
+            {
+                return luaState.CheckString(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public Vector3 CheckVector3()
         {
-            string error = null;
-            Vector3 v3 = luaState.CheckVector3(stackPos++, out error);
-            ThrowException(error);
-            return v3;
-        }
-
-        public Vector2 CheckVector2()
-        {
-            string error = null;
-            Vector2 v2 = luaState.CheckVector2(stackPos++, out error);
-            ThrowException(error);
-            return v2;
-        }
-
-        public Vector4 CheckVector4()
-        {
-            string error = null;
-            Vector4 v4 = luaState.CheckVector4(stackPos++, out error);
-            ThrowException(error);
-            return v4;
+            try
+            {
+                return luaState.CheckVector3(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public Quaternion CheckQuaternion()
         {
-            string error = null;
-            Quaternion quat = luaState.CheckQuaternion(stackPos++, out error);
-            ThrowException(error);
-            return quat;
+            try
+            {
+                return luaState.CheckQuaternion(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
+        }
+
+        public Vector2 CheckVector2()
+        {
+            try
+            {
+                return luaState.CheckVector2(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
+        }
+
+        public Vector4 CheckVector4()
+        {
+            try
+            {
+                return luaState.CheckVector4(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public Color CheckColor()
         {
-            string error = null;
-            Color clr = luaState.CheckColor(stackPos++, out error);
-            ThrowException(error);
-            return clr;
+            try
+            {
+                return luaState.CheckColor(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public Ray CheckRay()
         {
-            string error = null;
-            Ray ray = luaState.CheckRay(stackPos++, out error);
-            ThrowException(error);
-            return ray;
+            try
+            {
+                return luaState.CheckRay(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public Bounds CheckBounds()
         {
-            string error = null;
-            Bounds bound = luaState.CheckBounds(stackPos++, out error);
-            ThrowException(error);
-            return bound;            
+            try
+            {
+                return luaState.CheckBounds(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public LayerMask CheckLayerMask()
         {
-            string error = null;
-            LayerMask mask = luaState.CheckLayerMask(stackPos++, out error);
-            ThrowException(error);
-            return mask;  
+            try
+            {
+                return luaState.CheckLayerMask(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
-        public LuaInteger64 CheckInteger64()
+        public long CheckLong()
         {
-            string error = null;
-            LuaInteger64 i64 = luaState.CheckInteger64(stackPos++, out error);
-            ThrowException(error);
-            return i64;
+            try
+            {
+                return luaState.CheckLong(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
+        }
+
+        public ulong CheckULong()
+        {
+            try
+            {
+                return luaState.CheckULong(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public Delegate CheckDelegate()
         {
-            string error = null;
-            Delegate ev = luaState.CheckDelegate(stackPos++, out error);
-            ThrowException(error);
-            return ev;
+            try
+            {
+                return luaState.CheckDelegate(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public object CheckVariant()
@@ -396,50 +556,80 @@ namespace LuaInterface
 
         public char[] CheckCharBuffer()
         {
-            string error = null;
-            char[] buffer = luaState.CheckCharBuffer(stackPos++, out error);
-            ThrowException(error);
-            return buffer;
+            try
+            {
+                return luaState.CheckCharBuffer(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public byte[] CheckByteBuffer()
         {
-            string error = null;
-            byte[] buffer = luaState.CheckByteBuffer(stackPos++, out error);
-            ThrowException(error);
-            return buffer;
+            try
+            {
+                return luaState.CheckByteBuffer(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public object CheckObject(Type t)
         {
-            string error = null;
-            object obj = luaState.CheckObject(stackPos++, t, out error);
-            ThrowException(error);
-            return obj;
+            try
+            {
+                return luaState.CheckObject(stackPos++, t);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public LuaFunction CheckLuaFunction()
         {
-            string error = null;
-            LuaFunction func = luaState.CheckLuaFunction(stackPos++, out error);
-            ThrowException(error);
-            return func;
+            try
+            {
+                return luaState.CheckLuaFunction(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public LuaTable CheckLuaTable()
         {
-            string error = null;
-            LuaTable table = luaState.CheckLuaTable(stackPos++, out error);
-            ThrowException(error);
-            return table;
+            try
+            {
+                return luaState.CheckLuaTable(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
 
         public LuaThread CheckLuaThread()
         {
-            string error = null;
-            LuaThread thread = luaState.CheckLuaThread(stackPos++, out error);
-            ThrowException(error);
-            return thread;
+            try
+            {
+                return luaState.CheckLuaThread(stackPos++);
+            }
+            catch (Exception e)
+            {
+                EndPCall();
+                throw e;
+            }
         }
     }
 }

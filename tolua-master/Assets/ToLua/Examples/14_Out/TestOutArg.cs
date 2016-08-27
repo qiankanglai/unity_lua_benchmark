@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 using LuaInterface;
+using System;
 
 public class TestOutArg : MonoBehaviour 
 {            
     string script =
-        @"
-            local layer = 2 ^ LayerMask.NameToLayer('Default')
-
-            function TestPick(ray)                
-                local flag, hit = UnityEngine.Physics.Raycast(ray, nil, 5000, layer)                
-                --local flag, hit = UnityEngine.Physics.Raycast(ray, RaycastHit.out, 5000, layer)
+        @"                    
+            print('start')
+            local box = UnityEngine.BoxCollider
+                                                                            
+            function TestPick(ray)                                                                  
+                local _layer = 2 ^ LayerMask.NameToLayer('Default')
+                local flag, hit = UnityEngine.Physics.Raycast(ray, nil, 5000, _layer)                          
+                --local flag, hit = UnityEngine.Physics.Raycast(ray, RaycastHit.out, 5000, _layer)                
                 
                 if flag then
-                    print('pick from lua, point: '..tostring(hit.point))
+                    print('pick from lua, point: '..tostring(hit.point))                                        
                 end
             end
         ";
@@ -21,12 +24,13 @@ public class TestOutArg : MonoBehaviour
     LuaState state = null;
     LuaFunction func = null;
 
-	void Start () 
+    void Start () 
     {
+        new LuaResLoader();
         state = new LuaState();
-        state.Start();
         LuaBinder.Bind(state);
-        state.DoString(script);
+        state.Start();
+        state.DoString(script, "TestOutArg.cs");
 
         func = state.GetFunction("TestPick");
 	}
@@ -52,6 +56,7 @@ public class TestOutArg : MonoBehaviour
         }
 
         state.CheckTop();
+        state.Collect();
     }
 
     void OnDestroy()

@@ -66,7 +66,7 @@ Every test is executed five times, and then reboot App.
 
 [sLua](https://github.com/pangweiwei/slua), [commit #ef57252](https://github.com/pangweiwei/slua/commit/ef572524e5b95ff5305bd33d0f7a2725716f6ae5)
 
-[toLua](https://github.com/topameng/tolua),  [commit #2ac8c9e](https://github.com/topameng/tolua/commit/2ac8c9e82bddbd22f681660b16ba316c78cf861f)
+[toLua](https://github.com/topameng/tolua),  [commit #710dedc](https://github.com/topameng/tolua/commit/710dedccb151cd7066fd1f6ec27902867c8f09fc)
 
 ### 1.03 (20160814)
 

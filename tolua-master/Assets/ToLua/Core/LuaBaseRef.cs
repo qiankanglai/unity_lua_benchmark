@@ -1,4 +1,27 @@
-﻿using System;
+﻿/*
+Copyright (c) 2015-2016 topameng(topameng@qq.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace LuaInterface
@@ -6,7 +29,7 @@ namespace LuaInterface
     public abstract class LuaBaseRef : IDisposable
     {
         public string name = null;
-        protected int reference = 0;
+        protected int reference = -1;
         protected LuaState luaState;
         protected ObjectTranslator translator = null;
 
@@ -30,7 +53,7 @@ namespace LuaInterface
             if (count > 0)
             {
                 return;
-            }
+            }            
 
             Dispose(true);            
         }
@@ -51,9 +74,21 @@ namespace LuaInterface
                     luaState.CollectRef(reference, name, !disposeManagedResources);
                 }
                 
-                reference = 0;
-                luaState = null;                             
+                reference = -1;
+                luaState = null;
+                count = 0;
             }            
+        }
+
+        //慎用
+        public void Dispose(int generation)
+        {                         
+            if (count > generation)
+            {
+                return;
+            }
+
+            Dispose(true);
         }
 
         public LuaState GetLuaState()
@@ -68,7 +103,7 @@ namespace LuaInterface
 
         public override int GetHashCode()
         {
-            return reference;
+            return RuntimeHelpers.GetHashCode(this);            
         }
 
         public virtual int GetReference()
@@ -78,37 +113,53 @@ namespace LuaInterface
 
         public override bool Equals(object o)
         {
-            if ((object)o == null) return false;            
-            LuaBaseRef lbref = o as LuaBaseRef;
-            return lbref != null && lbref.reference == reference;
+            if (o == null) return reference <= 0;
+            LuaBaseRef lr = o as LuaBaseRef;      
+            
+            if (lr == null || lr.reference != reference)
+            {
+                return false;
+            }
+
+            return reference > 0;
         }
 
-        public static bool operator == (LuaBaseRef a, LuaBaseRef b)
+        static bool CompareRef(LuaBaseRef a, LuaBaseRef b)
         {
             if (System.Object.ReferenceEquals(a, b))
             {
                 return true;
             }
 
-            object l = (object)a;
+            object l = a;
             object r = b;
 
-            if (l == null)
+            if (l == null && r != null)
             {
-                return r == null || b.reference == 0;
+                return r == null || b.reference <= 0;
             }
 
-            if (r == null)
+            if (l != null && r == null)
             {
-                return a.reference == 0;
+                return a.reference <= 0;
             }
 
-            return r != null && a.reference == b.reference;
+            if (a.reference != b.reference)
+            {
+                return false;
+            }
+
+            return a.reference > 0;
+        }
+
+        public static bool operator == (LuaBaseRef a, LuaBaseRef b)
+        {
+            return CompareRef(a, b);
         }
 
         public static bool operator != (LuaBaseRef a, LuaBaseRef b)
         {
-            return !(a == b);
+            return !CompareRef(a, b);
         }
 
         public bool IsAlive()
