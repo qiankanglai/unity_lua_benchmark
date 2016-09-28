@@ -8,23 +8,15 @@ A simple test for performance comparsion between Lua in Unity。
 
 ## Benchmark Methods 测试方法
 
-Based on sLua's performance_test, I ported into other Projects.
+Based on sLua's performance_test, I ported these into other Projects.
 
-基于sLua自带的performance_test场景，我移植到其他项目中。
-
-At the same time Lua part has a clock inside. These two mesured time may not be the same. Some seems outliers which are colored red.
-
-同时Lua代码部分也有一个计时器。这两个测出来的时间有可能不那么一致。有些看起来是不太对的点已标红。
+基于sLua自带的performance_test场景，我将其移植到其他项目中。
 
 ## Benchmark Environment 测试环境
 
-Every test is executed five times, and then reboot App.
+Every test is executed five times, and then reboot App. Thanks for [UWA](https://www.uwa4d.com/) provided the newest test results with different devices. The original post can be found in `侑虎科技` Blog [Unity项目常见Lua解决方案性能比较](http://blog.uwa4d.com/archives/lua_perf.html).
 
-每个测试顺序执行五次，然后重启。
-
-[UWA](https://www.uwa4d.com/) provided the newest test results with different devices. The original post can be found in `侑虎科技` Blog [Unity项目常见Lua解决方案性能比较](http://blog.uwa4d.com/archives/lua_perf.html).
-
-这里感谢[侑虎科技UWA](https://www.uwa4d.com/)进行了最新版本在不同移动设备上的测试，原报告来自`侑虎科技`博客 [Unity项目常见Lua解决方案性能比较](http://blog.uwa4d.com/archives/lua_perf.html)。
+每个测试顺序执行五次，然后重启。这里感谢[侑虎科技UWA](https://www.uwa4d.com/)进行了最新版本在不同移动设备上的测试，原报告来自`侑虎科技`博客 [Unity项目常见Lua解决方案性能比较](http://blog.uwa4d.com/archives/lua_perf.html)。
 
 ### Android
 
@@ -48,11 +40,11 @@ Every test is executed five times, and then reboot App.
 
 ## Changelog
 
-[uLua](https://github.com/jarjin/uLua), [commit #dbe98bc](https://github.com/jarjin/uLua/commit/dbe98bce0a3fd169935617dec9e9fe129de8832b)
+### Current Code Base
 
-[sLua](https://github.com/pangweiwei/slua), [commit #ef57252](https://github.com/pangweiwei/slua/commit/ef572524e5b95ff5305bd33d0f7a2725716f6ae5)
-
-[toLua](https://github.com/topameng/tolua),  [commit #710dedc](https://github.com/topameng/tolua/commit/710dedccb151cd7066fd1f6ec27902867c8f09fc)
+- [uLua](https://github.com/jarjin/uLua), [commit #dbe98bc](https://github.com/jarjin/uLua/commit/dbe98bce0a3fd169935617dec9e9fe129de8832b)
+- [sLua](https://github.com/pangweiwei/slua), [commit #ef57252](https://github.com/pangweiwei/slua/commit/ef572524e5b95ff5305bd33d0f7a2725716f6ae5)
+- [toLua](https://github.com/topameng/tolua),  [commit #710dedc](https://github.com/topameng/tolua/commit/710dedccb151cd7066fd1f6ec27902867c8f09fc)
 
 ### 1.04 (20160928)
 
