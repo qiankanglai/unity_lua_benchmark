@@ -1,18 +1,14 @@
 A simple test for performance comparsion between Lua in Unity。
 
-**ATTENTION**: I'm a newbie to lua in fact, and this is only a simple test! If there is something wrong with my test or exists a better implemention, please contact me and I'll update ASAP! Any pull requests are welcomed!
-
 一个针对Unity中执行Lua的简单性能测试。
 
-**注意**: 本人对Lua是新手阶段，而且本项目旨在提供一个简单的测试比较。如果你发现我的测试代码有问题或者有更好的写法，请联系我、我会尽快改正。欢迎任何Pull Request！
-
-## Benchmark Methods 测试方法
+## Benchmark Content 测试内容
 
 Based on sLua's performance_test, I ported these into other Projects.
 
 基于sLua自带的performance_test场景，我将其移植到其他项目中。
 
-## Benchmark Environment 测试环境
+## Benchmark Results 测试结果
 
 Every test is executed five times, and then reboot App. Thanks for [UWA](https://www.uwa4d.com/) provided the newest test results with different devices. The original post can be found in `侑虎科技` Blog [Unity项目常见Lua解决方案性能比较](http://blog.uwa4d.com/archives/lua_perf.html).
 
